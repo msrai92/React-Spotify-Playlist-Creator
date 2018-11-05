@@ -25,23 +25,23 @@ class Playlist extends Component {
   render() {
     return (
       <div>
-        <Table bordered>
+        <Table >
           <thead>
             <tr>
               <th>Artist</th>
             </tr>
           </thead>
-          <tbody>
+          
             <tbody>
               {this.state.artists.map(artist => {
                 return (
                   <tr>
-                    <td>{artist.name}</td>
+                    <td>{artist.name}</td> <button>delete</button>
                   </tr>
                 );
               })}
             </tbody>
-          </tbody>
+          
         </Table>
       </div>
     );
