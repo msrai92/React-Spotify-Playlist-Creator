@@ -8,7 +8,31 @@
   color: white;
   font-size: calc(10px + 2vmin);
 }
+.container{
+  margin-top: 50px;
+}
+.clearButton{
+  color: black;
+  float: right;
+  border-radius: 5px;
+  margin-left: 5px;
+  height: 30px;
+  vertical-align: middle;
+  display: inline-block;
+  justify-content: right;
+  font-size: 18px;
+}
 
+.signInButton{
+  color: black;
+  border-radius: 5px;
+  margin-left: 5px;
+  height: 30px;
+  vertical-align: middle;
+  display: inline-block;
+  justify-content: center;
+  font-size: 18px;
+}
 .button {
   color: black;
   border-radius: 5px;
@@ -42,4 +66,8 @@
   color: black;
   -webkit-border-radius: 5px;
   -webkit-box-shadow: 0 0 0 30px white inset;
+}
+
+.instruction{
+  font-size: 13px;
 }

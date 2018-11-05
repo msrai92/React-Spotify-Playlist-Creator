@@ -4,10 +4,14 @@ class Form extends Component {
   state = {};
   render() {
     return (
+      
       <form className="form-container" onSubmit={this.props.getArtist}>
         <input className="input" type="text" name="artist" placeholder="artists" />
-        <button className="button">Generate</button>
+        <button className="button">Add</button>
+        
       </form>
+     
+      
     );
   }
 }

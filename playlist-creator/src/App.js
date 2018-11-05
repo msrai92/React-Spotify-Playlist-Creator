@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Form from "./components/form";
 import Playlist from "./components/playlist";
+import { Alert } from "../node_modules/react-bootstrap";
 
 class App extends Component {
   constructor(){
@@ -13,7 +14,8 @@ class App extends Component {
   }
   state = {
     access_token: undefined,
-    artist: []
+    artist: [],
+    error: undefined
   };
   componentDidMount(){
     var urlSearch = new URLSearchParams(window.location.search).get('access_token');
@@ -22,19 +24,38 @@ class App extends Component {
       headers: {'Authorization': 'Bearer ' + urlSearch}
     }).then((response) => response.json().then(data => this.setState({access_token: urlSearch})))
   }
+
+  clearList = a => {
+    this.setState({
+      artist: []
+    })
+  }
+  
   getArtist = e => {
     e.preventDefault();
+    
     console.log("artist button pressed");
     const art = e.target.elements.artist.value;
     console.log(art);
     var parts = art.split(',');
     var newArray = [];
-    var i;
+    var i;  
     for(i=0; i<parts.length;i++){
-      newArray.push({name: parts[i]});
+      newArray.push({name: parts[i].trim()});
     }
     console.log(newArray);
+
+    var artist = this.state.artist;
+    /*for(var a1 in newArray){
+      for(var a2 in artist){
+        if(a1 === a2){
+          newArray.splice(newArray.indexOf(a1), 1);
+          break;
+        }
+      }
+    }*/
     
+
     if(this.state.artist!==undefined){
      var a = this.state.artist.concat(newArray);
       this.setState({
@@ -57,9 +78,9 @@ class App extends Component {
         <h1>Spotify Playlist Creator</h1>
         <div><Form getArtist={this.getArtist} /></div>
         
-        <Playlist artist={this.state.artist}/>
-      </div> : <button onClick={()=> window.location ='http://localhost:8888/login'} 
-      style={{padding: '20px', 'fontSize': '50px', 'marginTop': '20px'}}> Sign in </button>
+        <Playlist clearList={this.clearList} artist={this.state.artist}/>
+      </div> : <div className="container"><p>Please sign into Spotify</p><button onClick={()=> window.location ='http://localhost:8888/login'} 
+      className="signInButton"> Sign in </button></div>
       }
 
       </div> 

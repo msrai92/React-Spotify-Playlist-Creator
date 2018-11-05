@@ -9,6 +9,7 @@ import { Table } from "react-bootstrap";
 */
 class Playlist extends Component {
   state = {
+    initialized: undefined,
     artists: []
   };
   componentWillReceiveProps(nextProps) {
@@ -19,13 +20,20 @@ class Playlist extends Component {
   getArtist(artist) {
     const a = artist;
     this.setState({
-      artists: a
+      artists: a,
+      initialized: true
     });
   }
+
+  
+
   render() {
     return (
+     
       <div>
-        <Table >
+        {this.state.initialized &&
+        <div>
+        <Table responsive stripped >
           <thead>
             <tr>
               <th>Artist</th>
@@ -36,13 +44,19 @@ class Playlist extends Component {
               {this.state.artists.map(artist => {
                 return (
                   <tr>
-                    <td>{artist.name}</td> <button>delete</button>
+                    <td>{artist.name}</td> 
                   </tr>
                 );
               })}
             </tbody>
           
         </Table>
+        
+    
+        <div><button className="clearButton" onClick={this.props.clearList}>clear</button></div>
+        
+        </div>
+        }
       </div>
     );
   }
