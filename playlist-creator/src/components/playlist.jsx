@@ -24,7 +24,7 @@ class Playlist extends Component {
       initialized: true
     });
   }
-
+  
   
 
   render() {
@@ -55,6 +55,8 @@ class Playlist extends Component {
     
         <div><button className="clearButton" onClick={this.props.clearList}>clear</button></div>
         
+        <div><button className="genButton" onClick={this.props.genList}>generate</button></div>
+
         </div>
         }
       </div>

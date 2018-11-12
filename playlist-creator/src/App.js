@@ -5,6 +5,10 @@ import Form from "./components/form";
 import Playlist from "./components/playlist";
 import { Alert } from "../node_modules/react-bootstrap";
 
+function parse(string){
+  var a = encodeURIComponent(string)
+  return a;
+}
 class App extends Component {
   constructor(){
     super();
@@ -15,6 +19,8 @@ class App extends Component {
   state = {
     access_token: undefined,
     artist: [],
+    id: undefined,
+    data: undefined,
     error: undefined
   };
   componentDidMount(){
@@ -22,7 +28,22 @@ class App extends Component {
     if(urlSearch) this.setState({access_token: urlSearch})
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + urlSearch}
-    }).then((response) => response.json().then(data => this.setState({access_token: urlSearch})))
+    }).then((response) => response.json().then(data => this.setState({access_token: urlSearch, data: data})))
+    console.log(this.state.data);
+  }
+  
+  getTracks(){
+    var urlSearch = new URLSearchParams(window.location.search).get('access_token');
+    var id = this.state.id;
+    console.log(id);
+    fetch(`https://api.spotify.com/v1/artists/${id}/top-tracks`, {
+      method: 'GET',
+      headers: {
+        'country': 'US',
+        'Accept': 'application/json',
+        'Content-Type': 'application.json',
+        'Authorization': 'Bearer ' + urlSearch}
+    }).then((response) => response.json().then(data => console.log(data)))
   }
 
   clearList = a => {
@@ -30,7 +51,39 @@ class App extends Component {
       artist: []
     })
   }
+  genList = async c => {
+    var urlSearch = new URLSearchParams(window.location.search).get('access_token');
+    console.log(urlSearch);
+    console.log(this.state.data);
+    
+    var art = this.state.artist[0].name;
+    var v = parse(art);
+
+    
+    console.log(v)
+    await fetch(`https://api.spotify.com/v1/search?q=${v}&type=artist`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application.json',
+        'Authorization': 'Bearer ' + urlSearch}
+    }).then((response) => response.json().then(
+      data => 
+      this.setState({ id: data.artists.items[0].id})
+    ))
+
+    var id = this.state.id;
+    console.log(id);
+    await fetch(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=US`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application.json',
+        'Authorization': 'Bearer ' + urlSearch}
+    }).then((response) => response.json().then(data => console.log(data)))
   
+    
+  }
   getArtist = e => {
     e.preventDefault();
     
@@ -78,7 +131,7 @@ class App extends Component {
         <h1>Spotify Playlist Creator</h1>
         <div><Form getArtist={this.getArtist} /></div>
         
-        <Playlist clearList={this.clearList} artist={this.state.artist}/>
+        <Playlist genList={this.genList} clearList={this.clearList} artist={this.state.artist}/>
       </div> : <div className="container"><p>Please sign into Spotify</p><button onClick={()=> window.location ='http://localhost:8888/login'} 
       className="signInButton"> Sign in </button></div>
       }
