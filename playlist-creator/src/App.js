@@ -19,7 +19,7 @@ class App extends Component {
   state = {
     access_token: undefined,
     artist: [],
-    id: undefined,
+    id: [],
     data: undefined,
     error: undefined
   };
@@ -32,10 +32,24 @@ class App extends Component {
     console.log(this.state.data);
   }
   
-  getTracks(){
+  async getID(artist){
+    var urlSearch = new URLSearchParams(window.location.search).get('access_token');
+    var parsedArtist = parse(artist);
+    await fetch(`https://api.spotify.com/v1/search?q=${parsedArtist}&type=artist`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application.json',
+        'Authorization': 'Bearer ' + urlSearch}
+    }).then((response) => response.json().then(
+      data => 
+      this.setState({ id: this.state.id.concat(data.artists.items[0].id)})
+    ))
+  }
+  async getTracks(){
     var urlSearch = new URLSearchParams(window.location.search).get('access_token');
     var id = this.state.id;
-    console.log(id);
+    //console.log(id);
     fetch(`https://api.spotify.com/v1/artists/${id}/top-tracks`, {
       method: 'GET',
       headers: {
@@ -59,20 +73,12 @@ class App extends Component {
     var art = this.state.artist[0].name;
     var v = parse(art);
 
-    
-    console.log(v)
-    await fetch(`https://api.spotify.com/v1/search?q=${v}&type=artist`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application.json',
-        'Authorization': 'Bearer ' + urlSearch}
-    }).then((response) => response.json().then(
-      data => 
-      this.setState({ id: data.artists.items[0].id})
-    ))
+    for(var i = 0; i<this.state.artist.length; i++){
+      this.getID(this.state.artist[i].name);
+    }
+    console.log(this.state.id);
 
-    var id = this.state.id;
+    /*var id = this.state.id;
     console.log(id);
     await fetch(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=US`, {
       method: 'GET',
@@ -80,9 +86,9 @@ class App extends Component {
         'Accept': 'application/json',
         'Content-Type': 'application.json',
         'Authorization': 'Bearer ' + urlSearch}
-    }).then((response) => response.json().then(data => console.log(data)))
+    }).then((response) => response.json().then(data => console.log(data)))*/
   
-    
+    s
   }
   getArtist = e => {
     e.preventDefault();
